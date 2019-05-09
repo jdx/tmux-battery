@@ -1,0 +1,25 @@
+#!/bin/bash
+
+PMSET=`pmset -g batt`
+LEVEL=`echo "$PMSET" | grep [0-9][0-9]% | awk 'NR==1{print$3}' | cut -c 1-3 | tr -dc '0-9'`
+
+case "$PMSET" in
+  *AC*)
+    EMOJI="⚡️"
+    if [ $LEVEL -ge 100 ]; then
+      exit 0
+    fi
+    ;;
+  *Battery*)
+    EMOJI="🔋"
+    ;;
+esac
+
+if [ $LEVEL -ge 80 ]; then
+  COLOR=green
+elif [ $LEVEL -ge 40 ]; then COLOR=yellow
+else
+  COLOR=red
+fi
+
+echo " $EMOJI#[fg=$COLOR]$LEVEL%"
